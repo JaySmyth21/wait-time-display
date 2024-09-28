@@ -15,22 +15,26 @@
     <h1>Next Available Time</h1>
     <div id="waitTime">Loading...</div>
 
-    <script>
-        async function fetchWaitTime(resourceId) {
-            const response = await fetch(`https://wait-time-api.vercel.app/api/wait-time?resourceId=${resourceId}`);
-            const data = await response.json();
-            document.getElementById('waitTime').innerText = data.nextAvailableTime; // Adjust this based on your API response structure
-        }
+ <script>
+    async function fetchWaitTime(resourceId) {
+        const response = await fetch(`https://wait-time-api.vercel.app/api/wait-time?resourceId=${resourceId}`);
+        const data = await response.json();
+        document.getElementById('waitTime').innerText = data.nextAvailableTime; // Adjust this based on your API response structure
+    }
 
-        // Get resourceId from the URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const resourceId = urlParams.get('resourceId');
-        if (resourceId) {
-            fetchWaitTime(resourceId);
-        } else {
-            document.getElementById('waitTime').innerText = "No resource ID provided.";
-        }
-    </script>
+    // Get resourceId from the URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const resourceId = urlParams.get('resourceId');
+    console.log("Resource ID:", resourceId); // Log the resource ID
+    
+    if (resourceId) {
+        fetchWaitTime(resourceId);
+    } else {
+        document.getElementById('waitTime').innerText = "No resource ID provided.";
+    }
+</script>
+
+
 </body>
 </html>
 s
