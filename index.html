@@ -3,73 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Next Available Time</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        select {
-            margin-bottom: 10px;
-        }
-    </style>
+    <title>Wait Time Display</title>
 </head>
 <body>
-    <h1>Next Available Time</h1>
-    
-    <label for="resourceSelect">Select Resource:</label>
-    <select id="resourceSelect">
-        <option value="">--Select a Resource--</option>
-    </select>
-    
-    <div id="waitTime">Select a resource to see the next available time.</div>
+    <h1>Wait Times for Resources</h1>
+    <div id="resource-list"></div>
 
     <script>
-        // Function to fetch available resources from Vercel API
-        // Function to fetch available resources from Vercel API
-function fetchResources() {
-    fetch('YOUR_API_ENDPOINT')
-        .then(response => response.json())
-        .then(resources => {
-            if (Array.isArray(resources.results)) {
-                resources.results.forEach(resource => {
-                    // Your logic for handling each resource
-                    console.log(resource);
+        const apiEndpoint = 'https://wait-time-api.vercel.app/api/resources'; // Replace with your endpoint
+
+        function fetchResources() {
+            fetch(apiEndpoint)
+                .then(response => response.json())
+                .then(resources => {
+                    if (Array.isArray(resources.results)) {
+                        const resourceListDiv = document.getElementById('resource-list');
+                        resources.results.forEach(resource => {
+                            // Create a new element for each resource
+                            const resourceDiv = document.createElement('div');
+                            resourceDiv.className = 'resource';
+
+                            // Add resource information
+                            resourceDiv.innerHTML = `
+                                <h2>${resource.name || 'Unnamed Resource'}</h2>
+                                <p>Phone: ${resource.phone || 'N/A'}</p>
+                                <p>Email: ${resource.email || 'N/A'}</p>
+                                <p>Description: ${resource.description || 'No description available'}</p>
+                                <img src="${resource.photoUrl}" alt="Resource Image" width="150"/>
+                                <hr>
+                            `;
+                            resourceListDiv.appendChild(resourceDiv);
+                        });
+                    } else {
+                        console.error('Error: Expected an array for resources.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching resources:', error);
                 });
-            } else {
-                console.error('Error: Expected an array for resources.');
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching resources:', error);
-        });
-}
-
-
-        // Function to fetch the next available time for the selected resource
-        async function fetchWaitTime(resourceId) {
-            try {
-                const response = await fetch(`https://wait-time-api.vercel.app/api/wait-time?resourceId=${resourceId}`);
-                const data = await response.json();
-                document.getElementById('waitTime').innerText = data.nextAvailableTime; // Adjust based on your API response structure
-            } catch (error) {
-                console.error('Error fetching wait time:', error);
-                document.getElementById('waitTime').innerText = 'Failed to load wait time.';
-            }
         }
 
-        // Event listener for when the user selects a resource
-        document.getElementById('resourceSelect').addEventListener('change', function() {
-            const resourceId = this.value;
-            if (resourceId) {
-                fetchWaitTime(resourceId);
-            } else {
-                document.getElementById('waitTime').innerText = 'Select a resource to see the next available time.';
-            }
-        });
-
-        // Fetch resources when the page loads
-        fetchResources();
+        // Call fetchResources when the page loads
+        window.onload = fetchResources;
     </script>
 </body>
 </html>
