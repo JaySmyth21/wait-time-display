@@ -26,23 +26,34 @@
 
     <script>
         // Function to fetch available resources from Vercel API
-        async function fetchResources() {
-            try {
-                const response = await fetch('https://wait-time-api.vercel.app/api/resources'); // Update to your Vercel endpoint
-                const resources = await response.json();
-                const select = document.getElementById('resourceSelect');
+        // Function to fetch available resources from Vercel API
+async function fetchResources() {
+    try {
+        const response = await fetch('https://wait-time-api.vercel.app/api/resources'); // Update to your Vercel endpoint
+        const resources = await response.json();
+        
+        console.log("Resources response:", resources); // Log the response to inspect
+        
+        const select = document.getElementById('resourceSelect');
 
-                resources.forEach(resource => {
-                    const option = document.createElement('option');
-                    option.value = resource.id; // Assuming resource has an id field
-                    option.textContent = resource.name; // Assuming resource has a name field
-                    select.appendChild(option);
-                });
-            } catch (error) {
-                console.error('Error fetching resources:', error);
-                document.getElementById('waitTime').innerText = 'Failed to load resources.';
-            }
+        // Check if resources is an array before calling forEach
+        if (Array.isArray(resources)) {
+            resources.forEach(resource => {
+                const option = document.createElement('option');
+                option.value = resource.id; // Assuming resource has an id field
+                option.textContent = resource.name; // Assuming resource has a name field
+                select.appendChild(option);
+            });
+        } else {
+            console.error("Expected an array but got something else:", resources);
+            document.getElementById('waitTime').innerText = 'Unexpected response format for resources.';
         }
+    } catch (error) {
+        console.error('Error fetching resources:', error);
+        document.getElementById('waitTime').innerText = 'Failed to load resources.';
+    }
+}
+
 
         // Function to fetch the next available time for the selected resource
         async function fetchWaitTime(resourceId) {
