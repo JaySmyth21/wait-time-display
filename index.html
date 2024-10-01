@@ -10,7 +10,7 @@
     <div id="resource-list"></div>
 
     <script>
-        const apiEndpoint = 'https://wait-time-api.vercel.app/api/resources'; // Replace with your endpoint
+        const apiEndpoint = 'https://wait-time-api.vercel.app/api/resources'; // Replace with your API endpoint
 
         function fetchResources() {
             fetch(apiEndpoint)
@@ -30,15 +30,21 @@
                             const email = resource.email || 'N/A';
                             const description = resource.description || 'No description available';
                             const photoUrl = resource.photoUrl || 'default-image-url.png'; // Replace with a default image URL
-                            const estimatedWaitTime = resource.estimatedWaitTime || 'N/A'; // Handle wait time
 
-                            // Add resource information, including estimated wait time
+                            // Manual calculation for estimated wait time
+                            const queueLength = resource.queueLength || 0;  // Assuming API returns queueLength
+                            const averageServiceTime = resource.averageServiceTime || 10;  // Assuming API returns averageServiceTime in minutes
+
+                            // Calculate estimated wait time
+                            const estimatedWaitTime = queueLength * averageServiceTime;
+
+                            // Add resource information, including manually calculated estimated wait time
                             resourceDiv.innerHTML = `
                                 <h2>${name}</h2>
                                 <p>Phone: ${phone}</p>
                                 <p>Email: ${email}</p>
                                 <p>Description: ${description}</p>
-                                <p>Estimated Wait Time: ${estimatedWaitTime}</p> <!-- Display wait time -->
+                                <p>Estimated Wait Time: ${estimatedWaitTime} minutes</p> <!-- Manually calculated wait time -->
                                 <img src="${photoUrl}" alt="Resource Image" width="150"/>
                                 <hr>
                             `;
