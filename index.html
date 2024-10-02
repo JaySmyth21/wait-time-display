@@ -22,23 +22,31 @@
                 resourceListDiv.innerHTML = ''; // Clear previous resources
 
                 data.results.forEach(resource => {
-                    // Create a new element for each resource
-                    const resourceDiv = document.createElement('div');
-                    resourceDiv.className = 'resource';
+                    // Assuming availabilityStateByResource is part of the API response
+                    const availability = resource.availabilityStateByResource || 'unavailable';
+                    
+                    // Check if the resource is available (adjust according to your API's availability status)
+                    if (availability === 'available') {
+                        // Create a new element for each available resource
+                        const resourceDiv = document.createElement('div');
+                        resourceDiv.className = 'resource';
 
-                    // Get wait time details from resource properties
-                    const waitTime = resource.wait || 0; // Assuming wait is in seconds
-                    const estimatedWaitTime = Math.ceil(waitTime / 60); // Convert to minutes
+                        // Get wait time details from resource properties
+                        const waitTime = resource.wait || 0; // Assuming wait is in seconds
+                        const estimatedWaitTime = Math.ceil(waitTime / 60); // Convert to minutes
 
-                    // Display the resource name (assuming the resource has a name property)
-                    const resourceName = resource.name || 'Unknown Resource';
+                        // Display the resource name (assuming the resource has a name property)
+                        const resourceName = resource.name || 'Unknown Resource';
 
-                    // Display the estimated wait time
-                    resourceDiv.innerHTML = `
-                        <h3>Jennica</h3>
-                        <p>Estimated Wait Time: ${estimatedWaitTime} minutes</p>
-                    `;
-                    resourceListDiv.appendChild(resourceDiv);
+                        // Display the estimated wait time
+                        resourceDiv.innerHTML = `
+                            <h3>${resourceName}</h3>
+                            <p>Estimated Wait Time: ${estimatedWaitTime} minutes</p>
+                        `;
+                        resourceListDiv.appendChild(resourceDiv);
+                    } else {
+                        console.log(`Resource ${resource.name} is not available.`);
+                    }
                 });
             } else {
                 console.error('Error: Expected an array for resources.');
@@ -49,6 +57,7 @@
         });
 }
 
+        
 
         // Call fetchResources when the page loads
         window.onload = fetchResources;
