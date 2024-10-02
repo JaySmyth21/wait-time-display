@@ -4,63 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wait Time Display</title>
+    <script src="resources.js" defer></script>
+    <script src="wait-time.js" defer></script>
 </head>
 <body>
-    <h1>Wait Times for Resources</h1>
-    <div id="resource-list"></div>
+    <h1>Estimated Wait Time</h1>
+    <div id="wait-time">Loading...</div> <!-- Placeholder for wait time -->
 
     <script>
-        const apiEndpoint = 'https://wait-time-api.vercel.app/api/wait-time?resourceId=g5vf3PLphGsH6CwksXYi'; // Replace with your API endpoint
+        async function fetchWaitTime() {
+            try {
+                const response = await fetch('https://wait-time-api.vercel.app/api/wait-time?resourceId=g5vf3PLphGsH6CwksXYi'); // Replace with your Vercel URL
+                const data = await response.json();
 
-        function fetchResources() {
-            fetch(apiEndpoint)
-                .then(response => response.json())
-                .then(resources => {
-                    console.log(resources);  // Log the resources for debugging
-                    if (Array.isArray(resources.results)) {
-                        const resourceListDiv = document.getElementById('resource-list');
-                        resources.results.forEach(resource => {
-                            // Create a new element for each resource
-                            const resourceDiv = document.createElement('div');
-                            resourceDiv.className = 'resource';
+                // Extract wait time for a specific resource
+                const resourceId = "1tKUQ4CZafxxZXaMEpxp"; // Change this to your desired resource ID
+                const waitTime = data.results[0].waitByResource[resourceId]?.firstAvailable;
 
-                            // Use fallback values for potential null fields
-                            const name = resource.name || 'Unnamed Resource';
-                            const phone = resource.phone || 'N/A';
-                            const email = resource.email || 'N/A';
-                            const description = resource.description || 'No description available';
-                            const photoUrl = resource.photoUrl || 'default-image-url.png'; // Replace with a default image URL
-
-                            // Get wait time details from resource properties
-                            const queueLength = resource.queueLength || 0;  // Assuming API returns queueLength
-                            const averageServiceTime = resource.averageServiceTime || 10;  // Assuming API returns averageServiceTime in minutes
-
-                            // Calculate estimated wait time
-                            const estimatedWaitTime = queueLength * averageServiceTime;
-
-                            // Add resource information, including manually calculated estimated wait time
-                            resourceDiv.innerHTML = `
-                                <h2>${name}</h2>
-                                <p>Phone: ${phone}</p>
-                                <p>Email: ${email}</p>
-                                <p>Description: ${description}</p>
-                                <p>Estimated Wait Time: ${estimatedWaitTime} minutes</p> <!-- Manually calculated wait time -->
-                                <img src="${photoUrl}" alt="Resource Image" width="150"/>
-                                <hr>
-                            `;
-                            resourceListDiv.appendChild(resourceDiv);
-                        });
-                    } else {
-                        console.error('Error: Expected an array for resources.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching resources:', error);
-                });
+                // Check if waitTime is available and update the DOM
+                const waitTimeDiv = document.getElementById('wait-time');
+                if (waitTime !== undefined) {
+                    waitTimeDiv.innerText = `Estimated Wait Time: ${waitTime} seconds`;
+                } else {
+                    waitTimeDiv.innerText = "No wait time data available for this resource.";
+                }
+            } catch (error) {
+                console.error('Error fetching wait time:', error);
+                document.getElementById('wait-time').innerText = "Error fetching wait time.";
+            }
         }
 
-        // Call fetchResources when the page loads
-        window.onload = fetchResources;
+        // Call the function to fetch wait time when the page loads
+        window.onload = fetchWaitTime;
     </script>
 </body>
 </html>
