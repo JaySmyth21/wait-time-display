@@ -1,82 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wait Time Display</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wait Time Display</title>
 </head>
 <body>
-<h1>Wait Times for Resources</h1>
-<div id="resource-list"></div>
+    <h1>Wait Times for Resources</h1>
+    <div id="resource-list"></div>
 
-<script>
-const apiEndpoint = 'https://wait-time-api.vercel.app/api/wait-time?resourceId=g5vf3PLphGsH6CwksXYi'; // Replace with your API endpoint
+    <script>
+        const apiEndpoint = 'https://wait-time-api.vercel.app/api/wait-time?resourceId=g5vf3PLphGsH6CwksXYi'; // Replace with your API endpoint
 
-function fetchResources() {
-    fetch(apiEndpoint)
-        .then(response => response.json())
-        .then(resources => {
-            console.log(resources);  // Log the resources for debugging
-            if (Array.isArray(resources.results)) {
-                const resourceListDiv = document.getElementById('resource-list');
-                resourceListDiv.innerHTML = ''; // Clear previous resources
+        function fetchResources() {
+            fetch(apiEndpoint)
+                .then(response => response.json())
+                .then(resources => {
+                    console.log(resources);  // Log the resources for debugging
+                    if (Array.isArray(resources.results)) {
+                        const resourceListDiv = document.getElementById('resource-list');
+                        resourceListDiv.innerHTML = ''; // Clear previous resources
 
-                // Fetch wait times for all resources
-                fetch(apiEndpoint) // Replace with your Vercel URL
-                    .then(waitTimeResponse => waitTimeResponse.json())
-                    .then(waitTimeData => {
-                        // Create a map for quick access to wait times by resource ID
-                        const waitTimes = {};
-                        if (waitTimeData.results && waitTimeData.results.length > 0) {
-                            waitTimeData.results[0].waitByResource.forEach(waitInfo => {
-                                waitTimes[waitInfo.resourceId] = waitInfo.firstAvailable;
-                            });
-                        }
-
-                        // Process each resource and display information
                         resources.results.forEach(resource => {
                             // Create a new element for each resource
                             const resourceDiv = document.createElement('div');
                             resourceDiv.className = 'resource';
 
-                            // Use fallback values for potential null fields
-                            const name = resource.name || 'Unnamed Resource';
-                            const phone = resource.phone || 'N/A';
-                            const email = resource.email || 'N/A';
-                            const description = resource.description || 'No description available';
-                            const photoUrl = resource.photoUrl || 'default-image-url.png'; // Replace with a default image URL
+                            // Get wait time details from resource properties
+                            const queueLength = resource.queueLength || 0;  // Assuming API returns queueLength
+                            const averageServiceTime = resource.averageServiceTime || 10;  // Assuming API returns averageServiceTime in minutes
 
-                            // Get the estimated wait time from the waitTimes map
-                            const estimatedWaitTime = waitTimes[resource.id] !== undefined ? waitTimes[resource.id] : 'N/A';
+                            // Calculate estimated wait time
+                            const estimatedWaitTime = queueLength * averageServiceTime;
 
-                            // Add resource information, including fetched estimated wait time
+                            // Display only the estimated wait time
                             resourceDiv.innerHTML = `
-                                <h2>${name}</h2>
-                                <p>Phone: ${phone}</p>
-                                <p>Email: ${email}</p>
-                                <p>Description: ${description}</p>
-                                <p>Estimated Wait Time: ${estimatedWaitTime} seconds</p> <!-- Fetched wait time -->
-                                <img src="${photoUrl}" alt="Resource Image" width="150"/>
-                                <hr>
+                                <p>Estimated Wait Time: ${estimatedWaitTime} minutes</p>
                             `;
                             resourceListDiv.appendChild(resourceDiv);
                         });
-                    })
-                    .catch(waitTimeError => {
-                        console.error('Error fetching wait times:', waitTimeError);
-                    });
-            } else {
-                console.error('Error: Expected an array for resources.');
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching resources:', error);
-        });
-}
+                    } else {
+                        console.error('Error: Expected an array for resources.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching resources:', error);
+                });
+        }
 
-
-// Call fetchResources when the page loads
-window.onload = fetchResources;
-</script>
+        // Call fetchResources when the page loads
+        window.onload = fetchResources;
+    </script>
 </body>
 </html>
