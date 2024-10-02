@@ -31,7 +31,7 @@
                             const description = resource.description || 'No description available';
                             const photoUrl = resource.photoUrl || 'default-image-url.png'; // Replace with a default image URL
 
-                            // Manual calculation for estimated wait time
+                            // Get wait time details from resource properties
                             const queueLength = resource.queueLength || 0;  // Assuming API returns queueLength
                             const averageServiceTime = resource.averageServiceTime || 10;  // Assuming API returns averageServiceTime in minutes
 
