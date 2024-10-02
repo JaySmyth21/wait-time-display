@@ -30,8 +30,12 @@
                     const waitTime = resource.wait || 0; // Assuming wait is in seconds
                     const estimatedWaitTime = Math.ceil(waitTime / 60); // Convert to minutes
 
+                    // Display the resource name (assuming the resource has a name property)
+                    const resourceName = resource.name || 'Unknown Resource';
+
                     // Display the estimated wait time
                     resourceDiv.innerHTML = `
+                        <h3>${resourceName}</h3>
                         <p>Estimated Wait Time: ${estimatedWaitTime} minutes</p>
                     `;
                     resourceListDiv.appendChild(resourceDiv);
@@ -44,6 +48,7 @@
             console.error('Error fetching resources:', error);
         });
 }
+
 
         // Call fetchResources when the page loads
         window.onload = fetchResources;
