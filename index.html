@@ -12,40 +12,45 @@
     <script>
         const apiEndpoint = 'https://wait-time-api.vercel.app/api/wait-time?resourceId=g5vf3PLphGsH6CwksXYi'; // Replace with your API endpoint
 
-       function fetchResources() {
+      function fetchResources() {
     fetch(apiEndpoint)
         .then(response => response.json())
-        .then(data => {
-            console.log(data);  // Log the resources for debugging
-            if (Array.isArray(data.results)) {
+        .then(resources => {
+            console.log(resources);  // Log the resources for debugging
+            if (Array.isArray(resources.results)) {
                 const resourceListDiv = document.getElementById('resource-list');
                 resourceListDiv.innerHTML = ''; // Clear previous resources
 
-                data.results.forEach(resource => {
-                    // Assuming availabilityStateByResource is part of the API response
-                    const availability = resource.availabilityStateByResource || 'unavailable';
-                    
-                    // Check if the resource is available (adjust according to your API's availability status)
-                    if (availability === 'available') {
-                        // Create a new element for each available resource
+                resources.results.forEach(resource => {
+                    // Check if the current resource ID is in availabilityStateByResource
+                    if (availabilityStateByResource[resource.id]) {
+                        // Create a new element for each resource
                         const resourceDiv = document.createElement('div');
                         resourceDiv.className = 'resource';
 
                         // Get wait time details from resource properties
-                        const waitTime = resource.wait || 0; // Assuming wait is in seconds
-                        const estimatedWaitTime = Math.ceil(waitTime / 60); // Convert to minutes
+                        const queueLength = resource.queueLength || 0;  // Assuming API returns queueLength
+                        const averageServiceTime = resource.averageServiceTime || 10;  // Assuming API returns averageServiceTime in minutes
 
-                        // Display the resource name (assuming the resource has a name property)
-                        const resourceName = resource.name || 'Unknown Resource';
+                        // Calculate estimated wait time
+                        const estimatedWaitTime = queueLength * averageServiceTime;
 
-                        // Display the estimated wait time
-                        resourceDiv.innerHTML = `
-                            <h3>${resourceName}</h3>
-                            <p>Estimated Wait Time: ${estimatedWaitTime} minutes</p>
-                        `;
+                        // Check if the resource is available
+                        const availabilityState = availabilityStateByResource[resource.id];
+                        if (availabilityState.isAvailable) {
+                            // Display the estimated wait time only if the resource is available
+                            resourceDiv.innerHTML = `
+                                <p>Resource ID: ${resource.id}</p>
+                                <p>Estimated Wait Time: ${estimatedWaitTime} minutes</p>
+                            `;
+                        } else {
+                            resourceDiv.innerHTML = `
+                                <p>Resource ID: ${resource.id}</p>
+                                <p>Status: Not Available</p>
+                            `;
+                        }
+
                         resourceListDiv.appendChild(resourceDiv);
-                    } else {
-                        console.log(`Resource ${resource.name} is not available.`);
                     }
                 });
             } else {
@@ -56,6 +61,7 @@
             console.error('Error fetching resources:', error);
         });
 }
+
 
         
 
