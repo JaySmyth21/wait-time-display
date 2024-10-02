@@ -13,41 +13,38 @@
 const apiEndpoint = 'https://wait-time-api.vercel.app/api/wait-time?resourceId=g5vf3PLphGsH6CwksXYi'; // Replace with your API endpoint
 
 function fetchResources() {
-fetch(apiEndpoint)
-.then(response => response.json())
-.then(data => {
-console.log(data);  // Log the resources for debugging
-if (Array.isArray(data.results)) {
-const resourceListDiv = document.getElementById('resource-list');
-resourceListDiv.innerHTML = ''; // Clear previous resources
+    fetch(apiEndpoint)
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);  // Log the fetched data for debugging
+        const resourceListDiv = document.getElementById('resource-list');
+        resourceListDiv.innerHTML = ''; // Clear previous resources
 
-data.results.forEach(resource => {
-// Create a new element for each resource
-const resourceDiv = document.createElement('div');
-resourceDiv.className = 'resource';
+        // Check if data is an object
+        if (typeof data === 'object') {
+            // Loop through each key-value pair in the data object
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    // Create a new element for each key-value pair
+                    const dataDiv = document.createElement('div');
+                    dataDiv.className = 'data-item';
 
-// Get wait time details from resource properties
-const waitTime = resource.wait || 0; // Assuming wait is in seconds
-const estimatedWaitTime = Math.ceil(waitTime / 60); // Convert to minutes
-
-// Display the resource name (assuming the resource has a name property)
-const resourceName = resource.name || 'Unknown Resource';
-
-// Display the estimated wait time
-resourceDiv.innerHTML = `
-                        
-                        <h3>Jennica</h3>
-                       <p>Estimated Wait Time: ${estimatedWaitTime} minutes</p>
-                   `;
-resourceListDiv.appendChild(resourceDiv);
-});
-} else {
-console.error('Error: Expected an array for resources.');
-}
-})
-.catch(error => {
-console.error('Error fetching resources:', error);
-});
+                    // Display the key and its corresponding value
+                    const value = JSON.stringify(data[key], null, 2); // Stringify for better formatting
+                    dataDiv.innerHTML = `
+                        <h3>${key}</h3>
+                        <pre>${value}</pre>
+                    `;
+                    resourceListDiv.appendChild(dataDiv);
+                }
+            }
+        } else {
+            console.error('Error: Expected an object for data.');
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching resources:', error);
+    });
 }
 
 
