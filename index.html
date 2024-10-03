@@ -24,6 +24,12 @@
                     const availabilityStateByResource = data.results[0].availabilityStateByResource;
                     const waitByResource = data.results[0].waitByResource;
 
+                    // Hardcoded names for the resources
+                    const resourceNameMap = {
+                        'BzZQrXT9Q3xgvSXeiU2F': 'Jennica',
+                        'qB4RRvUC5XY3GFIckWM3': 'Sairuh',
+                    };
+
                     // Logic to map the statuses between resources as per your requirement
                     const resourceStatusMap = {
                         'BzZQrXT9Q3xgvSXeiU2F': availabilityStateByResource['1tKUQ4CZafxxZXaMEpxp'] || 'Not available',
@@ -34,6 +40,7 @@
                     const relevantResources = ['BzZQrXT9Q3xgvSXeiU2F', 'qB4RRvUC5XY3GFIckWM3'];
 
                     relevantResources.forEach(resourceId => {
+                        const name = resourceNameMap[resourceId] || resourceId; // Use the hardcoded name
                         const state = resourceStatusMap[resourceId] || 'Not available';
                         const waitDetails = waitByResource[resourceId];
                         const waitTime = waitDetails ? waitDetails.firstAvailable : 'Not available';
@@ -42,7 +49,7 @@
                         const resourceDiv = document.createElement('div');
                         resourceDiv.className = 'resource-item';
                         resourceDiv.innerHTML = `
-                            <p><strong>Resource ID:</strong> ${resourceId} | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${waitTime} seconds</p>
+                            <p><strong>Name:</strong> ${name} | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${waitTime} seconds</p>
                         `;
                         
                         resourceListDiv.appendChild(resourceDiv);
