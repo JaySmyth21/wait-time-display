@@ -13,18 +13,10 @@
         const apiEndpoint = 'https://wait-time-api.vercel.app/api/wait-time?resourceId=g5vf3PLphGsH6CwksXYi'; // Replace with your API endpoint
 
         function fetchResources() {
-            console.log("Fetching data from API...");
-            
             fetch(apiEndpoint)
-            .then(response => {
-                console.log("Response received from API:");
-                console.log(response);
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log("Data fetched from API:");
                 console.log(data);  // Log the fetched data for debugging
-                
                 const resourceListDiv = document.getElementById('resource-list');
                 resourceListDiv.innerHTML = ''; // Clear previous resources
 
@@ -32,29 +24,27 @@
                     const availabilityStateByResource = data.results[0].availabilityStateByResource;
                     const waitByResource = data.results[0].waitByResource;
 
-                    console.log("Availability State by Resource:", availabilityStateByResource);
-                    console.log("Wait Time by Resource:", waitByResource);
-
-                    // Display availability status and wait time for each resource, even if they don't match
-                    const allResourceIds = new Set([
-                        ...Object.keys(availabilityStateByResource),
-                        ...Object.keys(waitByResource)
-                    ]);
-
-                    allResourceIds.forEach(resourceId => {
-                        const state = availabilityStateByResource[resourceId] || 'Not available';
-                        const waitDetails = waitByResource[resourceId];
-                        const waitTime = waitDetails ? waitDetails.firstAvailable : 'Not available';
-                        
-                        // Create a single line display for each resource with status and wait time
-                        const resourceDiv = document.createElement('div');
-                        resourceDiv.className = 'resource-item';
-                        resourceDiv.innerHTML = `
-                            <p><strong>Resource ID:</strong> ${resourceId} | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${waitTime} seconds</p>
-                        `;
-                        
-                        resourceListDiv.appendChild(resourceDiv);
-                    });
+                    // Combine and display availabilityStateByResource and waitByResource on the same line
+                    if (availabilityStateByResource && waitByResource) {
+                        for (const resourceId in availabilityStateByResource) {
+                            if (availabilityStateByResource.hasOwnProperty(resourceId) && waitByResource.hasOwnProperty(resourceId)) {
+                                const state = availabilityStateByResource[resourceId];
+                                const waitDetails = waitByResource[resourceId];
+                                const waitTime = waitDetails.firstAvailable !== undefined ? waitDetails.firstAvailable : 'Not available';
+                                
+                                // Create a single line display for each resource with status and wait time
+                                const resourceDiv = document.createElement('div');
+                                resourceDiv.className = 'resource-item';
+                                resourceDiv.innerHTML = `
+                                    <p><strong>Resource ID:</strong> ${resourceId} | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${waitTime} seconds</p>
+                                `;
+                                
+                                resourceListDiv.appendChild(resourceDiv);
+                            }
+                        }
+                    } else {
+                        console.error('Error: availabilityStateByResource or waitByResource is not available.');
+                    }
                 } else {
                     console.error('Error: No results available.');
                 }
