@@ -30,18 +30,15 @@
                         'qB4RRvUC5XY3GFIckWM3': availabilityStateByResource['g5vf3PLphGsH6CwksXYi'] || 'Not available',
                     };
 
-                    const allResourceIds = new Set([
-                        ...Object.keys(availabilityStateByResource),
-                        ...Object.keys(waitByResource)
-                    ]);
+                    // Only display mapped resources (BzZQrXT9Q3xgvSXeiU2F, qB4RRvUC5XY3GFIckWM3)
+                    const relevantResources = ['BzZQrXT9Q3xgvSXeiU2F', 'qB4RRvUC5XY3GFIckWM3'];
 
-                    allResourceIds.forEach(resourceId => {
-                        // Use custom status mapping for specific resources
-                        const state = resourceStatusMap[resourceId] || availabilityStateByResource[resourceId] || 'Not available';
+                    relevantResources.forEach(resourceId => {
+                        const state = resourceStatusMap[resourceId] || 'Not available';
                         const waitDetails = waitByResource[resourceId];
                         const waitTime = waitDetails ? waitDetails.firstAvailable : 'Not available';
 
-                        // Create a single line display for each resource
+                        // Create a single line display for each relevant resource
                         const resourceDiv = document.createElement('div');
                         resourceDiv.className = 'resource-item';
                         resourceDiv.innerHTML = `
