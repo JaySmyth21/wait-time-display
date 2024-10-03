@@ -35,27 +35,26 @@
                     console.log("Availability State by Resource:", availabilityStateByResource);
                     console.log("Wait Time by Resource:", waitByResource);
 
-                    // Combine and display availabilityStateByResource and waitByResource on the same line
-                    if (availabilityStateByResource && waitByResource) {
-                        for (const resourceId in availabilityStateByResource) {
-                            if (availabilityStateByResource.hasOwnProperty(resourceId) && waitByResource.hasOwnProperty(resourceId)) {
-                                const state = availabilityStateByResource[resourceId];
-                                const waitDetails = waitByResource[resourceId];
-                                const waitTime = waitDetails.firstAvailable !== undefined ? waitDetails.firstAvailable : 'Not available';
-                                
-                                // Create a single line display for each resource with status and wait time
-                                const resourceDiv = document.createElement('div');
-                                resourceDiv.className = 'resource-item';
-                                resourceDiv.innerHTML = `
-                                    <p><strong>Resource ID:</strong> ${resourceId} | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${waitTime} seconds</p>
-                                `;
-                                
-                                resourceListDiv.appendChild(resourceDiv);
-                            }
-                        }
-                    } else {
-                        console.error('Error: availabilityStateByResource or waitByResource is not available.');
-                    }
+                    // Display availability status and wait time for each resource, even if they don't match
+                    const allResourceIds = new Set([
+                        ...Object.keys(availabilityStateByResource),
+                        ...Object.keys(waitByResource)
+                    ]);
+
+                    allResourceIds.forEach(resourceId => {
+                        const state = availabilityStateByResource[resourceId] || 'Not available';
+                        const waitDetails = waitByResource[resourceId];
+                        const waitTime = waitDetails ? waitDetails.firstAvailable : 'Not available';
+                        
+                        // Create a single line display for each resource with status and wait time
+                        const resourceDiv = document.createElement('div');
+                        resourceDiv.className = 'resource-item';
+                        resourceDiv.innerHTML = `
+                            <p><strong>Resource ID:</strong> ${resourceId} | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${waitTime} seconds</p>
+                        `;
+                        
+                        resourceListDiv.appendChild(resourceDiv);
+                    });
                 } else {
                     console.error('Error: No results available.');
                 }
@@ -70,4 +69,3 @@
     </script>
 </body>
 </html>
-
