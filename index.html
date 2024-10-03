@@ -20,19 +20,24 @@
                 const resourceListDiv = document.getElementById('resource-list');
                 resourceListDiv.innerHTML = ''; // Clear previous resources
 
-                // Extract and display availabilityStateByResource and waitByResource together
                 if (data.results && data.results.length > 0) {
                     const availabilityStateByResource = data.results[0].availabilityStateByResource;
                     const waitByResource = data.results[0].waitByResource;
 
-                    // Loop through both availabilityStateByResource and waitByResource and display them together
+                    // Logic to map the statuses between resources as per your requirement
+                    const resourceStatusMap = {
+                        'BzZQrXT9Q3xgvSXeiU2F': availabilityStateByResource['g5vf3PLphGsH6CwksXYi'] || 'Not available',
+                        'qB4RRvUC5XY3GFIckWM3': availabilityStateByResource['BzZQrXT9Q3xgvSXeiU2F'] || 'Not available',
+                    };
+
                     const allResourceIds = new Set([
                         ...Object.keys(availabilityStateByResource),
                         ...Object.keys(waitByResource)
                     ]);
 
                     allResourceIds.forEach(resourceId => {
-                        const state = availabilityStateByResource[resourceId] || 'Not available';
+                        // Use custom status mapping for specific resources
+                        const state = resourceStatusMap[resourceId] || availabilityStateByResource[resourceId] || 'Not available';
                         const waitDetails = waitByResource[resourceId];
                         const waitTime = waitDetails ? waitDetails.firstAvailable : 'Not available';
 
