@@ -36,8 +36,8 @@
                         'qB4RRvUC5XY3GFIckWM3': availabilityStateByResource['g5vf3PLphGsH6CwksXYi'] || 'Not available',
                     };
 
-                    // Only display mapped resources (BzZQrXT9Q3xgvSXeiU2F, qB4RRvUC5XY3GFIckWM3)
-                    const relevantResources = ['BzZQrXT9Q3xgvSXeiU2F', 'qB4RRvUC5XY3GFIckWM3'];
+                    // Create an array of relevant resources in the desired order
+                    const relevantResources = ['qB4RRvUC5XY3GFIckWM3', 'BzZQrXT9Q3xgvSXeiU2F'];
 
                     relevantResources.forEach(resourceId => {
                         const name = resourceNameMap[resourceId] || resourceId; // Use the hardcoded name
@@ -49,7 +49,7 @@
                         const resourceDiv = document.createElement('div');
                         resourceDiv.className = 'resource-item';
                         resourceDiv.innerHTML = `
-                            <p><strong>${name}:</strong> | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Estimated Wait Time:</strong> ${waitTime} seconds</p>
+                            <p><strong>${name}:</strong> | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${waitTime} seconds</p>
                         `;
                         
                         resourceListDiv.appendChild(resourceDiv);
