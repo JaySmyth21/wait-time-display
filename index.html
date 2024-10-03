@@ -26,8 +26,8 @@
 
                     // Hardcoded names for the resources
                     const resourceNameMap = {
-                        'BzZQrXT9Q3xgvSXeiU2F': 'Jennica',
-                        'qB4RRvUC5XY3GFIckWM3': 'Sairuh',
+                        'BzZQrXT9Q3xgvSXeiU2F': 'Junior Piercer', // Jennica
+                        'qB4RRvUC5XY3GFIckWM3': 'Piercer', // Sairuh
                     };
 
                     // Logic to map the statuses between resources as per your requirement
@@ -49,7 +49,7 @@
                         const resourceDiv = document.createElement('div');
                         resourceDiv.className = 'resource-item';
                         resourceDiv.innerHTML = `
-                            <p><strong>Name:</strong> ${name} | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${waitTime} seconds</p>
+                            <p><strong>${name}:</strong> | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Estimated Wait Time:</strong> ${waitTime} seconds</p>
                         `;
                         
                         resourceListDiv.appendChild(resourceDiv);
