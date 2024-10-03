@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wait Time Display</title>
+    <title>Wait Time and State Display</title>
 </head>
 <body>
-    <h1>Wait Times for Resources</h1>
+    <h1>Wait Times and Activity States for Resources</h1>
     <div id="resource-list"></div>
 
     <script>
@@ -20,48 +20,31 @@
                 const resourceListDiv = document.getElementById('resource-list');
                 resourceListDiv.innerHTML = ''; // Clear previous resources
 
-                // Extract and display availabilityStateByResource
+                // Extract and display availabilityStateByResource and waitByResource together
                 if (data.results && data.results.length > 0) {
                     const availabilityStateByResource = data.results[0].availabilityStateByResource;
                     const waitByResource = data.results[0].waitByResource;
 
-                    if (availabilityStateByResource && typeof availabilityStateByResource === 'object') {
-                        const availabilityDiv = document.createElement('div');
-                        availabilityDiv.className = 'availability';
-                        availabilityDiv.innerHTML = `<h3>Availability State by Resource</h3>`;
+                    // Loop through both availabilityStateByResource and waitByResource and display them together
+                    const allResourceIds = new Set([
+                        ...Object.keys(availabilityStateByResource),
+                        ...Object.keys(waitByResource)
+                    ]);
 
-                        for (const resourceId in availabilityStateByResource) {
-                            if (availabilityStateByResource.hasOwnProperty(resourceId)) {
-                                const state = availabilityStateByResource[resourceId];
-                                availabilityDiv.innerHTML += `
-                                    <p>Resource ID: ${resourceId}, State: ${JSON.stringify(state)}</p>
-                                `;
-                            }
-                        }
-                        resourceListDiv.appendChild(availabilityDiv);
-                    } else {
-                        console.error('Error: availabilityStateByResource is not available.');
-                    }
+                    allResourceIds.forEach(resourceId => {
+                        const state = availabilityStateByResource[resourceId] || 'Not available';
+                        const waitDetails = waitByResource[resourceId];
+                        const waitTime = waitDetails ? waitDetails.firstAvailable : 'Not available';
 
-                    // Extract and display waitByResource
-                    if (waitByResource && typeof waitByResource === 'object') {
-                        const waitDiv = document.createElement('div');
-                        waitDiv.className = 'wait-time';
-                        waitDiv.innerHTML = `<h3>Wait Time by Resource</h3>`;
-
-                        for (const resourceId in waitByResource) {
-                            if (waitByResource.hasOwnProperty(resourceId)) {
-                                const waitDetails = waitByResource[resourceId];
-                                const waitTime = waitDetails.firstAvailable !== undefined ? waitDetails.firstAvailable : 'Not available';
-                                waitDiv.innerHTML += `
-                                    <p>Resource ID: ${resourceId}, Wait Time: ${waitTime} seconds</p>
-                                `;
-                            }
-                        }
-                        resourceListDiv.appendChild(waitDiv);
-                    } else {
-                        console.error('Error: waitByResource is not available.');
-                    }
+                        // Create a single line display for each resource
+                        const resourceDiv = document.createElement('div');
+                        resourceDiv.className = 'resource-item';
+                        resourceDiv.innerHTML = `
+                            <p><strong>Resource ID:</strong> ${resourceId} | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${waitTime} seconds</p>
+                        `;
+                        
+                        resourceListDiv.appendChild(resourceDiv);
+                    });
                 } else {
                     console.error('Error: No results available.');
                 }
