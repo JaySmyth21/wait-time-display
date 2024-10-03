@@ -49,7 +49,7 @@
                         const resourceDiv = document.createElement('div');
                         resourceDiv.className = 'resource-item';
                         resourceDiv.innerHTML = `
-                            <p><strong>${name}</strong> | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${waitTime} seconds</p>
+                            <p><strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]} | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${waitTime} seconds</p>
                         `;
                         
                         resourceListDiv.appendChild(resourceDiv);
@@ -68,4 +68,3 @@
     </script>
 </body>
 </html>
-
