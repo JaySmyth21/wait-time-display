@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width" content="initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Piercer Availability</title>
     <style>
         body {
@@ -31,6 +31,16 @@
         }
         .unavailable {
             background-color: #F44336; /* Red */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .resource-item p {
+                margin: 0; /* Remove default margin */
+            }
+            .resource-item p:after {
+                content: ' '; /* Add space after the second | */
+            }
         }
     </style>
 </head>
