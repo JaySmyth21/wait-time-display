@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width" content="initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Piercer Availability</title>
     <style>
         body {
@@ -31,6 +31,13 @@
         }
         .unavailable {
             background-color: #F44336; /* Red */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .resource-item p {
+                display: block; /* Display on a new line */
+            }
         }
     </style>
 </head>
@@ -108,9 +115,18 @@
                         const resourceDiv = document.createElement('div');
                         resourceDiv.className = `resource-item ${backgroundClass}`;
                         resourceDiv.innerHTML = `
-                            <p><strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]} | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${formattedWaitTime}</p>
+                            <p>
+                                <strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]} | 
+                                <strong>Status:</strong> ${JSON.stringify(state)} | 
+                                <strong>Wait Time:</strong> ${formattedWaitTime}
+                            </p>
                         `;
-                        
+
+                        // Add line break for screens 600px or less
+                        if (window.innerWidth <= 600) {
+                            resourceDiv.innerHTML = resourceDiv.innerHTML.replace(/ \| /g, '<br>');
+                        }
+
                         resourceListDiv.appendChild(resourceDiv);
                     });
                 } else {
@@ -127,4 +143,3 @@
     </script>
 </body>
 </html>
-
