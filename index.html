@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width" content="initial-scale=1.0">
     <title>Wait Time and State Display</title>
 </head>
 <body>
@@ -11,6 +11,23 @@
 
     <script>
         const apiEndpoint = 'https://wait-time-api.vercel.app/api/wait-time?resourceId=g5vf3PLphGsH6CwksXYi'; // Replace with your API endpoint
+
+        function formatWaitTime(seconds) {
+            if (seconds < 0) return "Not available";
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const remainingMinutes = minutes % 60;
+
+            let formattedTime = '';
+            if (hours > 0) {
+                formattedTime += `${hours} hour${hours > 1 ? 's' : ''}`;
+            }
+            if (remainingMinutes > 0) {
+                if (formattedTime) formattedTime += ' ';
+                formattedTime += `${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''}`;
+            }
+            return formattedTime.trim();
+        }
 
         function fetchResources() {
             fetch(apiEndpoint)
@@ -43,13 +60,16 @@
                         const name = resourceNameMap[resourceId] || resourceId; // Use the hardcoded name
                         const state = resourceStatusMap[resourceId] || 'Not available';
                         const waitDetails = waitByResource[resourceId];
-                        const waitTime = waitDetails ? waitDetails.firstAvailable : 'Not available';
+                        const waitTimeInSeconds = waitDetails ? waitDetails.firstAvailable : -1;
+
+                        // Format the wait time
+                        const formattedWaitTime = formatWaitTime(waitTimeInSeconds);
 
                         // Create a single line display for each relevant resource
                         const resourceDiv = document.createElement('div');
                         resourceDiv.className = 'resource-item';
                         resourceDiv.innerHTML = `
-                            <p><strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]} | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${waitTime} seconds</p>
+                            <p><strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]} | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${formattedWaitTime}</p>
                         `;
                         
                         resourceListDiv.appendChild(resourceDiv);
