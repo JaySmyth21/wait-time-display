@@ -4,6 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width" content="initial-scale=1.0">
     <title>Wait Time and State Display</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .resource-item {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            color: #fff; /* White text for better contrast */
+        }
+        .active {
+            background-color: #4CAF50; /* Green */
+        }
+        .away {
+            background-color: #FFEB3B; /* Yellow */
+            color: #000; /* Black text for better contrast */
+        }
+        .unavailable {
+            background-color: #F44336; /* Red */
+        }
+    </style>
 </head>
 <body>
     <h1>Wait Times and Activity States for Resources</h1>
@@ -65,11 +93,21 @@
                         // Format the wait time
                         const formattedWaitTime = formatWaitTime(waitTimeInSeconds);
 
+                        // Determine background class based on state
+                        let backgroundClass;
+                        if (state === 'ACTIVE') {
+                            backgroundClass = 'active';
+                        } else if (state === 'AWAY') {
+                            backgroundClass = 'away';
+                        } else {
+                            backgroundClass = 'unavailable';
+                        }
+
                         // Create a single line display for each relevant resource
                         const resourceDiv = document.createElement('div');
-                        resourceDiv.className = 'resource-item';
+                        resourceDiv.className = `resource-item ${backgroundClass}`;
                         resourceDiv.innerHTML = `
-                            <p><strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]} | <strong>Availability:</strong> ${JSON.stringify(state)} | <strong>Estimated Wait Time:</strong> ${formattedWaitTime}</p>
+                            <p><strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]} | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${formattedWaitTime}</p>
                         `;
                         
                         resourceListDiv.appendChild(resourceDiv);
