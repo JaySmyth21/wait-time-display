@@ -36,10 +36,10 @@
         /* Responsive Design */
         @media (max-width: 600px) {
             .resource-item p {
-                margin: 0; /* Remove default margin */
+                display: block; /* Display on a new line */
             }
-            .resource-item p:after {
-                content: ' '; /* Add space after the second | */
+            .resource-item p span {
+                display: block; /* Each item in a new line */
             }
         }
     </style>
@@ -118,7 +118,11 @@
                         const resourceDiv = document.createElement('div');
                         resourceDiv.className = `resource-item ${backgroundClass}`;
                         resourceDiv.innerHTML = `
-                            <p><strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]} | <strong>Status:</strong> ${JSON.stringify(state)} | <strong>Wait Time:</strong> ${formattedWaitTime}</p>
+                            <p>
+                                <strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]} | 
+                                <strong>Status:</strong> ${JSON.stringify(state)} | 
+                                <strong>Wait Time:</strong> ${formattedWaitTime}
+                            </p>
                         `;
                         
                         resourceListDiv.appendChild(resourceDiv);
