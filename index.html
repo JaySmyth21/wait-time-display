@@ -16,33 +16,31 @@
             text-align: center;
         }
         .resource-item {
-            padding: 10px;
+            padding: 20px; /* Added padding for more vertical space */
             margin: 10px 0;
             border-radius: 10px;
             color: #fff;
             text-align: center;
             display: inline-block;
-            width: 48%; /* Adjusted to display resources side by side */
+            width: 48%; /* Display side by side */
             box-sizing: border-box;
+            vertical-align: top; /* Align divs to the top */
         }
         .active {
-            background-color: #4CAF50; /* Green */
+            background-color: #4CAF50;
         }
         .away {
-            background-color: #FFEB3B; /* Yellow */
+            background-color: #FFEB3B;
             color: #000;
         }
         .unavailable {
-            background-color: #F44336; /* Red */
+            background-color: #F44336;
         }
         /* Responsive Design */
         @media (max-width: 600px) {
             .resource-item {
                 display: block;
                 width: 100%; /* Stack resources on small screens */
-            }
-            .resource-item p {
-                display: block;
             }
         }
     </style>
@@ -119,25 +117,18 @@
                             backgroundClass = 'unavailable';
                         }
 
-                        // Add each resource information side by side
+                        // Add each resource information side by side with line breaks
                         combinedResourceHTML += `
                             <div class="resource-item ${backgroundClass}">
-                                <p>
-                                    <strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]} | 
-                                    <strong>Status:</strong> ${state} | 
-                                    <strong>Estimated Wait Time:</strong> ${formattedWaitTime}
-                                </p>
+                                <p><strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]}</p>
+                                <p><strong>Status:</strong> ${state}</p>
+                                <p><strong>Estimated Wait Time:</strong> ${formattedWaitTime}</p>
                             </div>
                         `;
                     });
 
                     // Add combined resources to the resource list
                     resourceListDiv.innerHTML = combinedResourceHTML;
-
-                    // Add line break for screens 600px or less
-                    if (window.innerWidth <= 600) {
-                        resourceListDiv.innerHTML = resourceListDiv.innerHTML.replace(/ \| /g, '<br>');
-                    }
                 } else {
                     console.error('Error: No results available.');
                 }
