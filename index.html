@@ -84,10 +84,16 @@
                     };
 
                     // Logic to map the statuses between resources as per your requirement
-                    const resourceStatusMap = {
-                        'BzZQrXT9Q3xgvSXeiU2F': availabilityStateByResource['1tKUQ4CZafxxZXaMEpxp'] === 'ACTIVE' ? 'Working' : availabilityStateByResource['1tKUQ4CZafxxZXaMEpxp'] || 'Not available',
-                        'qB4RRvUC5XY3GFIckWM3': availabilityStateByResource['g5vf3PLphGsH6CwksXYi'] === 'ACTIVE' ? 'Working' : availabilityStateByResource['g5vf3PLphGsH6CwksXYi'] || 'Not available',
+                   const resourceStatusMap = {
+                        'BzZQrXT9Q3xgvSXeiU2F': availabilityStateByResource['1tKUQ4CZafxxZXaMEpxp'] === 'ACTIVE' ? 'Working' :
+                                                availabilityStateByResource['1tKUQ4CZafxxZXaMEpxp'] === 'AWAY' ? 'Away' : 
+                                                availabilityStateByResource['1tKUQ4CZafxxZXaMEpxp'] || 'Not available',
+                        
+                        'qB4RRvUC5XY3GFIckWM3': availabilityStateByResource['g5vf3PLphGsH6CwksXYi'] === 'ACTIVE' ? 'Working' :
+                                                availabilityStateByResource['g5vf3PLphGsH6CwksXYi'] === 'AWAY' ? 'Away' : 
+                                                availabilityStateByResource['g5vf3PLphGsH6CwksXYi'] || 'Not available',
                     };
+
 
                     // Create an array of relevant resources in the desired order
                     const relevantResources = ['qB4RRvUC5XY3GFIckWM3', 'BzZQrXT9Q3xgvSXeiU2F'];
@@ -105,7 +111,7 @@
                         let backgroundClass;
                         if (state === 'Working') {
                             backgroundClass = 'active';
-                        } else if (state === 'AWAY') {
+                        } else if (state === 'Away') {
                             backgroundClass = 'away';
                         } else {
                             backgroundClass = 'unavailable';
