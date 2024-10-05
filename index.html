@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -18,25 +18,31 @@
         .resource-item {
             padding: 10px;
             margin: 10px 0;
-            border-radius: 10px; /* Increased border radius */
-            color: #fff; /* White text for better contrast */
-            text-align: center; /* Centered text */
+            border-radius: 10px;
+            color: #fff;
+            text-align: center;
+            display: inline-block;
+            width: 48%; /* Adjusted to display resources side by side */
+            box-sizing: border-box;
         }
         .active {
             background-color: #4CAF50; /* Green */
         }
         .away {
             background-color: #FFEB3B; /* Yellow */
-            color: #000; /* Black text for better contrast */
+            color: #000;
         }
         .unavailable {
             background-color: #F44336; /* Red */
         }
-
         /* Responsive Design */
         @media (max-width: 600px) {
+            .resource-item {
+                display: block;
+                width: 100%; /* Stack resources on small screens */
+            }
             .resource-item p {
-                display: block; /* Display on a new line */
+                display: block;
             }
         }
     </style>
@@ -77,14 +83,12 @@
                     const availabilityStateByResource = data.results[0].availabilityStateByResource;
                     const waitByResource = data.results[0].waitByResource;
 
-                    // Hardcoded names for the resources
                     const resourceNameMap = {
                         'BzZQrXT9Q3xgvSXeiU2F': 'Junior Piercer: Jennica', // Junior Piercer
                         'qB4RRvUC5XY3GFIckWM3': 'Piercer: Sairuh', // Piercer
                     };
 
-                    // Logic to map the statuses between resources as per your requirement
-                   const resourceStatusMap = {
+                    const resourceStatusMap = {
                         'BzZQrXT9Q3xgvSXeiU2F': availabilityStateByResource['1tKUQ4CZafxxZXaMEpxp'] === 'ACTIVE' ? 'Working' :
                                                 availabilityStateByResource['1tKUQ4CZafxxZXaMEpxp'] === 'AWAY' ? 'Away' : 
                                                 availabilityStateByResource['1tKUQ4CZafxxZXaMEpxp'] || 'Not available',
@@ -94,20 +98,18 @@
                                                 availabilityStateByResource['g5vf3PLphGsH6CwksXYi'] || 'Not available',
                     };
 
-
-                    // Create an array of relevant resources in the desired order
                     const relevantResources = ['qB4RRvUC5XY3GFIckWM3', 'BzZQrXT9Q3xgvSXeiU2F'];
 
+                    let combinedResourceHTML = ''; // To store the combined resource info
+
                     relevantResources.forEach(resourceId => {
-                        const name = resourceNameMap[resourceId] || resourceId; // Use the hardcoded name
+                        const name = resourceNameMap[resourceId] || resourceId;
                         const state = resourceStatusMap[resourceId] || 'Not available';
                         const waitDetails = waitByResource[resourceId];
                         const waitTimeInSeconds = waitDetails ? waitDetails.firstAvailable : -1;
 
-                        // Format the wait time
                         const formattedWaitTime = formatWaitTime(waitTimeInSeconds);
 
-                        // Determine background class based on state
                         let backgroundClass;
                         if (state === 'Working') {
                             backgroundClass = 'active';
@@ -117,24 +119,25 @@
                             backgroundClass = 'unavailable';
                         }
 
-                        // Create a single line display for each relevant resource
-                        const resourceDiv = document.createElement('div');
-                        resourceDiv.className = `resource-item ${backgroundClass}`;
-                        resourceDiv.innerHTML = `
-                            <p>
-                                <strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]} | 
-                                <strong>Status:</strong> ${state} | 
-                                <strong>Estimated Wait Time:</strong> ${formattedWaitTime}
-                            </p>
+                        // Add each resource information side by side
+                        combinedResourceHTML += `
+                            <div class="resource-item ${backgroundClass}">
+                                <p>
+                                    <strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]} | 
+                                    <strong>Status:</strong> ${state} | 
+                                    <strong>Estimated Wait Time:</strong> ${formattedWaitTime}
+                                </p>
+                            </div>
                         `;
-
-                        // Add line break for screens 600px or less
-                        if (window.innerWidth <= 600) {
-                            resourceDiv.innerHTML = resourceDiv.innerHTML.replace(/ \| /g, '<br>');
-                        }
-
-                        resourceListDiv.appendChild(resourceDiv);
                     });
+
+                    // Add combined resources to the resource list
+                    resourceListDiv.innerHTML = combinedResourceHTML;
+
+                    // Add line break for screens 600px or less
+                    if (window.innerWidth <= 600) {
+                        resourceListDiv.innerHTML = resourceListDiv.innerHTML.replace(/ \| /g, '<br>');
+                    }
                 } else {
                     console.error('Error: No results available.');
                 }
