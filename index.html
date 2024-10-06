@@ -128,9 +128,11 @@
         }
 
         // **Send resource status to JotForm using postMessage**
-        function sendResourceStatusToForm(resourceStatus) {
-            window.parent.postMessage(resourceStatus, '*'); 
+       function sendResourceStatusToForm(resourceStatus) {
+            console.log("Sending message to JotForm:", resourceStatus);  // Log the message being sent
+            window.parent.postMessage(resourceStatus, '*');
         }
+
 
         window.onload = fetchResources;
     </script>
