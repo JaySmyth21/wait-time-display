@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,15 +16,11 @@
             text-align: center;
         }
         .resource-item {
-            padding: 20px; /* Added padding for more vertical space */
+            padding: 10px;
             margin: 10px 0;
             border-radius: 10px;
             color: #fff;
             text-align: center;
-            display: inline-block;
-            width: 48%; /* Display side by side */
-            box-sizing: border-box;
-            vertical-align: top; /* Align divs to the top */
         }
         .active {
             background-color: #4CAF50;
@@ -35,13 +31,6 @@
         }
         .unavailable {
             background-color: #F44336;
-        }
-        /* Responsive Design */
-        @media (max-width: 600px) {
-            .resource-item {
-                display: block;
-                width: 100%; /* Stack resources on small screens */
-            }
         }
     </style>
 </head>
@@ -73,7 +62,6 @@
             fetch(apiEndpoint)
             .then(response => response.json())
             .then(data => {
-                console.log(data);  // Log the fetched data for debugging
                 const resourceListDiv = document.getElementById('resource-list');
                 resourceListDiv.innerHTML = ''; // Clear previous resources
 
@@ -82,8 +70,8 @@
                     const waitByResource = data.results[0].waitByResource;
 
                     const resourceNameMap = {
-                        'BzZQrXT9Q3xgvSXeiU2F': 'Junior Piercer: Jennica', // Junior Piercer
-                        'qB4RRvUC5XY3GFIckWM3': 'Piercer: Sairuh', // Piercer
+                        'BzZQrXT9Q3xgvSXeiU2F': 'Junior Piercer: Jennica', 
+                        'qB4RRvUC5XY3GFIckWM3': 'Piercer: Sairuh',
                     };
 
                     const resourceStatusMap = {
@@ -97,8 +85,6 @@
                     };
 
                     const relevantResources = ['qB4RRvUC5XY3GFIckWM3', 'BzZQrXT9Q3xgvSXeiU2F'];
-
-                    let combinedResourceHTML = ''; // To store the combined resource info
 
                     relevantResources.forEach(resourceId => {
                         const name = resourceNameMap[resourceId] || resourceId;
@@ -117,18 +103,21 @@
                             backgroundClass = 'unavailable';
                         }
 
-                        // Add each resource information side by side with line breaks
-                        combinedResourceHTML += `
-                            <div class="resource-item ${backgroundClass}">
-                                <p><strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]}</p>
-                                <p><strong>Status:</strong> ${state}</p>
-                                <p><strong>Estimated Wait Time:</strong> ${formattedWaitTime}</p>
-                            </div>
+                        const resourceDiv = document.createElement('div');
+                        resourceDiv.className = `resource-item ${backgroundClass}`;
+                        resourceDiv.innerHTML = `
+                            <p>
+                                <strong>${name.split(':')[0]}:</strong> ${name.split(':')[1]} <br>
+                                <strong>Status:</strong> ${state} <br>
+                                <strong>Estimated Wait Time:</strong> ${formattedWaitTime}
+                            </p>
                         `;
-                    });
 
-                    // Add combined resources to the resource list
-                    resourceListDiv.innerHTML = combinedResourceHTML;
+                        resourceListDiv.appendChild(resourceDiv);
+
+                        // **Send status to JotForm** using postMessage
+                        sendResourceStatusToForm(`${name}: ${state}`);
+                    });
                 } else {
                     console.error('Error: No results available.');
                 }
@@ -138,7 +127,11 @@
             });
         }
 
-        // Call fetchResources when the page loads
+        // **Send resource status to JotForm using postMessage**
+        function sendResourceStatusToForm(resourceStatus) {
+            window.parent.postMessage(resourceStatus, '*'); 
+        }
+
         window.onload = fetchResources;
     </script>
 </body>
