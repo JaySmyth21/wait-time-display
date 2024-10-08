@@ -129,16 +129,18 @@
 
 
         // **Send resource status to JotForm using postMessage**
-       function sendResourceStatusToForm(resourceName, resourceStatus) {
-    // Create the message string to send to JotForm
-            const message = `${resourceName}: ${resourceStatus}`;
-            
-            // Log the message being sent (for debugging)
-            console.log(`Sending message to JotForm: ${message}`);
-            
-            // Send the message to JotForm using postMessage
-            window.parent.postMessage(message, '*');
-        }
+       // **Send resource status to JotForm using postMessage**
+function sendResourceStatusToForm(resourceName, resourceStatus) {
+    // Determine the appropriate JotForm field based on the resource
+    const fieldName = resourceName.includes('Jennica') ? 'juniorpiercerstatus' : 'piercerstatus';
+    
+    // Log the message being sent (for debugging)
+    console.log(`Sending message to JotForm: ${resourceName}: ${resourceStatus}`);
+    
+    // Send the message to JotForm with fieldName to update
+    window.top.postMessage(`${resourceName}: ${resourceStatus}`, '*'); // Make sure to send formatted correctly
+}
+
 
 
 
