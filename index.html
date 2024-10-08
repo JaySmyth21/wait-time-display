@@ -128,16 +128,15 @@
         }
 
         // **Send resource status to JotForm using postMessage**
+        // Send resource status to JotForm using postMessage
         function sendResourceStatusToForm(resourceName, resourceStatus) {
-            // Determine the appropriate JotForm field based on the resource
-            const fieldName = resourceName.includes('Jennica') ? 'juniorPiercerField' : 'piercerField';
-            
             // Log the message being sent (for debugging)
             console.log(`Sending message to JotForm: ${resourceName}: ${resourceStatus}`);
             
             // Send the message to JotForm with fieldName to update
             window.top.postMessage(`${resourceName}: ${resourceStatus}`, '*');
         }
+
 
         // Fetch resources after the page loads
         window.onload = function() {
