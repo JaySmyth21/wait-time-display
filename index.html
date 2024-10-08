@@ -127,36 +127,37 @@
             });
         }
 
-       // **Send resource status to JotForm using postMessage**
-function sendResourceStatusToForm(resourceName, resourceStatus) {
-    // Determine the appropriate JotForm field based on the resource
-    const fieldName = resourceName.includes('Jennica') ? 'juniorpiercerstatus' : 'piercerstatus';
-    
-    // Log the message being sent (for debugging)
-    console.log(`Sending message to JotForm: ${resourceName}: ${resourceStatus}`);
-    
-    // Send the message to JotForm
-    window.top.postMessage(`${fieldName}: ${resourceName}: ${resourceStatus}`, '*');
-}
+        // **Send resource status to JotForm using postMessage**
+        function sendResourceStatusToForm(resourceName, resourceStatus) {
+            // Determine the appropriate JotForm field based on the resource
+            const fieldName = resourceName.includes('Jennica') ? 'juniorpiercerstatus' : 'piercerstatus';
+            
+            // Log the message being sent (for debugging)
+            console.log(`Sending message to JotForm: ${resourceName}: ${resourceStatus}`);
+            
+            // Send the message to JotForm
+            window.top.postMessage(`${fieldName}: ${resourceName}: ${resourceStatus}`, '*');
+        }
 
-
-        // Fetch resources after the page loads
+        // Fetch resources and set up event listener after the page loads
         window.onload = function() {
-    // Add your existing listener setup code here
-    console.log("Document loaded. Checking field elements.");
+            console.log("Document loaded. Checking field elements.");
+            
+            const juniorPiercerField = document.querySelector(`[name="q81_juniorpiercerstatus"]`);
+            const piercerField = document.querySelector(`[name="q80_piercerstatus"]`);
 
-    const juniorPiercerField = document.querySelector(`[name="q81_juniorpiercerstatus"]`);
-    const piercerField = document.querySelector(`[name="q80_piercerstatus"]`);
+            console.log("Junior Piercer Field:", juniorPiercerField);
+            console.log("Piercer Field:", piercerField);
+            
+            // Start fetching resources
+            fetchResources();
 
-    console.log("Junior Piercer Field:", juniorPiercerField);
-    console.log("Piercer Field:", piercerField);
-    
-    window.addEventListener("message", function(event) {
-        console.log("Received message:", event.data);
-        fetchResources();
-    });
-};
-
+            // Set up message listener
+            window.addEventListener("message", function(event) {
+                console.log("Received message:", event.data);
+                fetchResources(); // Call to update resources if needed
+            });
+        };
     </script>
 </body>
 </html>
