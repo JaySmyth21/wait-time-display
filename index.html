@@ -140,23 +140,8 @@
         }
 
         // Fetch resources and set up event listener after the page loads
-        window.onload = function() {
-            console.log("Document loaded. Checking field elements.");
-            
-            const juniorPiercerField = document.querySelector(`[name="q81_juniorpiercerstatus"]`);
-            const piercerField = document.querySelector(`[name="q80_piercerstatus"]`);
-
-            console.log("Junior Piercer Field:", juniorPiercerField);
-            console.log("Piercer Field:", piercerField);
-            
-            // Start fetching resources
+       window.onload = function() {
             fetchResources();
-
-            // Set up message listener
-            window.addEventListener("message", function(event) {
-                console.log("Received message:", event.data);
-                fetchResources(); // Call to update resources if needed
-            });
         };
     </script>
 </body>
