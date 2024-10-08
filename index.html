@@ -142,8 +142,21 @@ function sendResourceStatusToForm(resourceName, resourceStatus) {
 
         // Fetch resources after the page loads
         window.onload = function() {
-            fetchResources();
-        };
+    // Add your existing listener setup code here
+    console.log("Document loaded. Checking field elements.");
+
+    const juniorPiercerField = document.querySelector(`[name="q81_juniorpiercerstatus"]`);
+    const piercerField = document.querySelector(`[name="q80_piercerstatus"]`);
+
+    console.log("Junior Piercer Field:", juniorPiercerField);
+    console.log("Piercer Field:", piercerField);
+    
+    window.addEventListener("message", function(event) {
+        console.log("Received message:", event.data);
+        fetchResources();
+    });
+};
+
     </script>
 </body>
 </html>
