@@ -64,16 +64,16 @@
             .then(data => {
                 const resourceListDiv = document.getElementById('resource-list');
                 resourceListDiv.innerHTML = ''; // Clear previous resources
-
+        
                 if (data.results && data.results.length > 0) {
                     const availabilityStateByResource = data.results[0].availabilityStateByResource;
                     const waitByResource = data.results[0].waitByResource;
-
+        
                     const resourceNameMap = {
                         'BzZQrXT9Q3xgvSXeiU2F': 'Junior Piercer: Jennica', 
                         'qB4RRvUC5XY3GFIckWM3': 'Piercer: Sairuh',
                     };
-
+        
                     const resourceStatusMap = {
                         'BzZQrXT9Q3xgvSXeiU2F': availabilityStateByResource['1tKUQ4CZafxxZXaMEpxp'] === 'ACTIVE' ? 'Working' :
                                                 availabilityStateByResource['1tKUQ4CZafxxZXaMEpxp'] === 'AWAY' ? 'Away' : 
@@ -83,17 +83,17 @@
                                                 availabilityStateByResource['g5vf3PLphGsH6CwksXYi'] === 'AWAY' ? 'Away' : 
                                                 availabilityStateByResource['g5vf3PLphGsH6CwksXYi'] || 'Not available',
                     };
-
+        
                     const relevantResources = ['qB4RRvUC5XY3GFIckWM3', 'BzZQrXT9Q3xgvSXeiU2F'];
-
+        
                     relevantResources.forEach(resourceId => {
                         const name = resourceNameMap[resourceId] || resourceId;
                         const state = resourceStatusMap[resourceId] || 'Not available';
                         const waitDetails = waitByResource[resourceId];
                         const waitTimeInSeconds = waitDetails ? waitDetails.firstAvailable : -1;
-
+        
                         const formattedWaitTime = formatWaitTime(waitTimeInSeconds);
-
+        
                         let backgroundClass;
                         if (state === 'Working') {
                             backgroundClass = 'active';
@@ -102,7 +102,7 @@
                         } else {
                             backgroundClass = 'unavailable';
                         }
-
+        
                         const resourceDiv = document.createElement('div');
                         resourceDiv.className = `resource-item ${backgroundClass}`;
                         resourceDiv.innerHTML = `
@@ -112,11 +112,11 @@
                                 <strong>Estimated Wait Time:</strong> ${formattedWaitTime}
                             </p>
                         `;
-
+        
                         resourceListDiv.appendChild(resourceDiv);
-
+        
                         // **Send status to JotForm** using postMessage
-                        sendResourceStatusToForm(`${name}: ${state}`);
+                        sendResourceStatusToForm(name, state);
                     });
                 } else {
                     console.error('Error: No results available.');
@@ -126,6 +126,7 @@
                 console.error('Error fetching resources:', error);
             });
         }
+
 
         // **Send resource status to JotForm using postMessage**
        function sendResourceStatusToForm(resourceName, resourceStatus) {
@@ -140,14 +141,7 @@
         }
 
 
-
-        relevantResources.forEach(resourceId => {
-            const name = resourceNameMap[resourceId] || resourceId;
-            const state = resourceStatusMap[resourceId] || 'Not available';
-            
-            // Call the function to send each resource's status separately
-            sendResourceStatusToForm(name, state);
-        });
+        window.onload = fetchResources;
 
     </script>
 </body>
