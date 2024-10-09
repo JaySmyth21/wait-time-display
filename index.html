@@ -129,22 +129,22 @@
 
        // **Send resource status to JotForm using postMessage**
         function sendResourceStatusToForm(resourceName, resourceStatus) {
-            // Determine the appropriate JotForm field based on the resource
-            const fieldName = resourceName.includes('Jennica') ? 'juniorpiercerstatus' : 'piercerstatus';
-            
-            // Log the message being sent (for debugging)
+            // Determine which hidden field to update based on the resource name
+            const fieldName = resourceName.includes('Jennica') ? 'juniorPiercer' : 'piercerStatus';
+        
+            // Log the message for debugging purposes
             console.log(`Sending message to JotForm: ${resourceName}: ${resourceStatus}`);
-            
-            // Send the message to JotForm
-            window.top.postMessage(`${fieldName}: ${resourceName}: ${resourceStatus}`, '*');
+        
+            // Send a message to the parent page (where the JotForm is embedded)
+            window.top.postMessage(`${fieldName}:${resourceStatus}`, '*');
         }
-
-        // Fetch resources after the page loads
+        
+        // Example usage when fetching the resource status (you can replace these with real data)
         window.onload = function() {
-           
-                fetchResources();
-           
+            sendResourceStatusToForm('Piercer: Sairuh', 'UNAVAILABLE');
+            sendResourceStatusToForm('Junior Piercer: Jennica', 'Working');
         };
+
     </script>
 </body>
 </html>
