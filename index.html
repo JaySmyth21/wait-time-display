@@ -116,7 +116,7 @@
                         resourceListDiv.appendChild(resourceDiv);
         
                         // **Send status to JotForm** using postMessage
-                        sendResourceStatusToForm(name, state);
+                       
                     });
                 } else {
                     console.error('Error: No results available.');
@@ -128,8 +128,7 @@
         }
 
         window.onload = function() {
-            sendResourceStatusToForm('Piercer: Sairuh', 'UNAVAILABLE');
-            sendResourceStatusToForm('Junior Piercer: Jennica', 'Working');
+    
             fetchResources();
         };
 
